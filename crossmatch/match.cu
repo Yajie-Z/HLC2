@@ -24,19 +24,18 @@ __device__ double compute_distance(double rax,double decx,double ray, double dec
 //kernel function
 __global__ void compute_1D_1D(double* d_in_ra1, double* d_in_dec1, double* d_in_ra2, double* d_in_dec2, int* d_out_dis, unsigned int nx, unsigned int ny,unsigned int *resultcount){
 
-	unsigned int ix = blockIdx.x * blockDim.x + threadIdx.x;	
-	if (ix+1 > nx) return;	
+    unsigned int ix = blockIdx.x * blockDim.x + threadIdx.x;	
+    if (ix+1 > nx) return;	
 	double d1 = d_in_ra1[ix], d2 = d_in_dec1[ix];
 	for (unsigned int iy = 0; iy < ny; ++iy){
-    double tmp1 = compute_distance(d1,d2,d_in_ra2[iy], d_in_dec2[iy]);
- 
-    if (tmp1<DIS){
-     d_out_dis[(iy)*(nx)+ix] = 1;
-     atomicAdd(resultcount, 1);
-    }
+	    double tmp1 = compute_distance(d1,d2,d_in_ra2[iy], d_in_dec2[iy]);
+	    if (tmp1<DIS){
+	     d_out_dis[(iy)*(nx)+ix] = 1;
+	     atomicAdd(resultcount, 1);
+             }
     
 //    if (tmp1<DIS){
-//      size_t index = iy*nx+ix>>5; //�൱��/32
+//      size_t index = iy*nx+ix>>5; //Ïàµ±ÓÚ/32
 //      size_t position = (iy*nx+ix) %32;
 //      atomicOr(&d_out_dis[index], 1<<position-1);
 //      //atomicOr(&d_out_iy[index], 1<<position-1);
@@ -68,62 +67,62 @@ int main(int argc, char **argv){
   	//read the csv input into recordmap
     recordmapAA = read_to_unordered("data/twomasstest5.csv",recordmapAA);
     iElaps = cpuSecond() - AllStart;
-  	printf("A read to unorded time is %f s\n", iElaps);
+    printf("A read to unorded time is %f s\n", iElaps);
     recordmapBB = read_to_unordered("data/twomasstest5.csv",recordmapBB);
     iElaps = cpuSecond() - AllStart;
-  	printf("A+B read to unorded time is %f s\n", iElaps);
+    printf("A+B read to unorded time is %f s\n", iElaps);
     unordered_map<int,vector<vector<double>>>::iterator iterA;
     unordered_map<int,vector<vector<double>>>::iterator iterB;
-  	int linenumA,linenumB;
+    int linenumA,linenumB;
   	
    
   	//get shared index list of recordmap A and B
     vector<int> sharedlist;
     sharedlist = get_shared_id(recordmapAA,recordmapBB);
     printf("shared index num: %d \n",sharedlist.size());
-   	iElaps = cpuSecond() - AllStart;
-  	printf("read csv file time is %f s\n", iElaps);
+    iElaps = cpuSecond() - AllStart;
+    printf("read csv file time is %f s\n", iElaps);
   	//printf ("__________\n");
  
      vector<vector<double>> matchresult;
    
    	// GPU Initialization
   	// set up device
-  	int dev = 0;
-  	CHECK(cudaSetDevice(dev));
+     int dev = 0;
+     CHECK(cudaSetDevice(dev));
    
    
    // define variety for communication of CPU and GPU
-  	double *h_in_ra1, *h_in_dec1, *h_in_ra2, *h_in_dec2;
-  	double *h_out_ra1, *h_out_dec1, *h_out_ra2, *h_out_dec2;
+     double *h_in_ra1, *h_in_dec1, *h_in_ra2, *h_in_dec2;
+     double *h_out_ra1, *h_out_dec1, *h_out_ra2, *h_out_dec2;
    
-  	double *d_in_ra1, *d_in_dec1, *d_in_ra2, *d_in_dec2;
-  	double *d_out_ra1, *d_out_dec1, *d_out_ra2, *d_out_dec2;
+     double *d_in_ra1, *d_in_dec1, *d_in_ra2, *d_in_dec2;
+     double *d_out_ra1, *d_out_dec1, *d_out_ra2, *d_out_dec2;
     
-  	double *h_in_ra_x, *h_in_dec_x, *h_in_ra_y, *h_in_dec_y;
-    int *h_out_dis,*d_out_dis;
-    unsigned int *h_count, *d_count;
+     double *h_in_ra_x, *h_in_dec_x, *h_in_ra_y, *h_in_dec_y;
+     int *h_out_dis,*d_out_dis;
+     unsigned int *h_count, *d_count;
 
-    CHECK(cudaMallocHost((int**)&h_count, sizeof(int)));
-    CHECK(cudaMalloc((void **)&d_count, sizeof(int)));
-    CHECK(cudaMemset(d_count, 0, sizeof(int)));
+     CHECK(cudaMallocHost((int**)&h_count, sizeof(int)));
+     CHECK(cudaMalloc((void **)&d_count, sizeof(int)));
+     CHECK(cudaMemset(d_count, 0, sizeof(int)));
   
     
-    // malloc device memory space
+     // malloc device memory space
   
-  	CHECK(cudaMallocHost((double**)&h_in_ra1, N*sizeof(double)));
-  	CHECK(cudaMallocHost((double**)&h_in_ra2, N*sizeof(double)));
-  	CHECK(cudaMallocHost((double**)&h_in_dec1, N*sizeof(double)));
-  	CHECK(cudaMallocHost((double**)&h_in_dec2, N*sizeof(double)));
+     CHECK(cudaMallocHost((double**)&h_in_ra1, N*sizeof(double)));
+     CHECK(cudaMallocHost((double**)&h_in_ra2, N*sizeof(double)));
+     CHECK(cudaMallocHost((double**)&h_in_dec1, N*sizeof(double)));
+     CHECK(cudaMallocHost((double**)&h_in_dec2, N*sizeof(double)));
    
-  	CHECK(cudaMallocHost((int**)&h_out_dis, BLOCK_MAX_X*BLOCK_MAX_Y*sizeof(int)));
-    CHECK(cudaMalloc((void **) &d_out_dis, BLOCK_MAX_X*BLOCK_MAX_Y*sizeof(int)));
+     CHECK(cudaMallocHost((int**)&h_out_dis, BLOCK_MAX_X*BLOCK_MAX_Y*sizeof(int)));
+     CHECK(cudaMalloc((void **) &d_out_dis, BLOCK_MAX_X*BLOCK_MAX_Y*sizeof(int)));
     
     size_t nBytes, nBytes2, nBytes3;
 
     unsigned int resultcount = 0;
     unsigned int compress_resultcount = 0;
-  	unsigned int nx, ny;
+    unsigned int nx, ny;
     
     int streamcount=0;
 
@@ -148,8 +147,9 @@ int main(int argc, char **argv){
     			h_in_dec_y = h_in_dec2;
     			nx = valuesA.size();
     			ny = valuesB.size();
-        }else{
-    			h_in_ra_x = h_in_ra2;
+       		 }else{
+    			
+			h_in_ra_x = h_in_ra2;
     			h_in_dec_x = h_in_dec2;
     			h_in_ra_y = h_in_ra1;
     			h_in_dec_y = h_in_dec1;
@@ -161,16 +161,16 @@ int main(int argc, char **argv){
       // for each calculation block
     		for (unsigned int data_x_offset = 0; data_x_offset < nx; data_x_offset += BLOCK_MAX_X){
     			for (unsigned int data_y_offset = 0; data_y_offset < ny; data_y_offset += BLOCK_MAX_Y){
-            streamcount = streamcount + 1; 
+            			streamcount = streamcount + 1; 
             
       
     				unsigned int data_x_band = min(nx-data_x_offset, BLOCK_MAX_X), 
     				data_y_band = min(ny-data_y_offset, BLOCK_MAX_Y);
     				
-            unsigned int *h_sharedInteger,*d_sharedInteger;
-            CHECK(cudaMallocHost((int**)&h_sharedInteger, sizeof(int)));
-            CHECK(cudaMalloc((void **)&d_sharedInteger, sizeof(int)));
-            CHECK(cudaMemset(d_sharedInteger, 0, sizeof(int)));
+			        unsigned int *h_sharedInteger,*d_sharedInteger;
+			        CHECK(cudaMallocHost((int**)&h_sharedInteger, sizeof(int)));
+			        CHECK(cudaMalloc((void **)&d_sharedInteger, sizeof(int)));
+			        CHECK(cudaMemset(d_sharedInteger, 0, sizeof(int)));
             
             
         
@@ -194,29 +194,29 @@ int main(int argc, char **argv){
     				CHECK(cudaMalloc((void **) &d_in_dec2,nBytes2));
     				//CHECK(cudaMalloc((void **) &d_out_dis, nBytes3));
     
-            //int j = streamcount % 2;                                  
+           			 //int j = streamcount % 2;                                  
     				CHECK(cudaMemcpyAsync(d_in_ra1, h_in_ra_x+data_x_offset, nBytes, cudaMemcpyHostToDevice));
     				CHECK(cudaMemcpyAsync(d_in_dec1, h_in_dec_x+data_x_offset, nBytes, cudaMemcpyHostToDevice));
     				CHECK(cudaMemcpyAsync(d_in_ra2, h_in_ra_y+data_y_offset, nBytes2, cudaMemcpyHostToDevice));
     				CHECK(cudaMemcpyAsync(d_in_dec2, h_in_dec_y+data_y_offset,nBytes2, cudaMemcpyHostToDevice));	
              		
-            compute_1D_1D <<<grid, block>>>(d_in_ra1, d_in_dec1, d_in_ra2, d_in_dec2, d_out_dis, data_x_band, data_y_band,d_sharedInteger);
+            			compute_1D_1D <<<grid, block>>>(d_in_ra1, d_in_dec1, d_in_ra2, d_in_dec2, d_out_dis, data_x_band, data_y_band,d_sharedInteger);
             
     				CHECK(cudaMemcpyAsync(h_out_dis, d_out_dis, nBytes3, cudaMemcpyDeviceToHost));
             
-    			  CHECK(cudaMemcpy(h_sharedInteger, d_sharedInteger, sizeof(int),cudaMemcpyDeviceToHost));
+    			 	CHECK(cudaMemcpy(h_sharedInteger, d_sharedInteger, sizeof(int),cudaMemcpyDeviceToHost));
  
-            //cout<<*h_sharedInteger<<endl;         
-            resultcount= resultcount + *h_sharedInteger; 
-  
+				//cout<<*h_sharedInteger<<endl;         
+				resultcount= resultcount + *h_sharedInteger; 
+
   
     				CHECK(cudaFree(d_in_ra1));
     				CHECK(cudaFree(d_in_ra2));
     				CHECK(cudaFree(d_in_dec1));
     				CHECK(cudaFree(d_in_dec2));
-            CHECK(cudaFree(d_sharedInteger));
-            CHECK(cudaFreeHost(h_sharedInteger));
-       		
+				CHECK(cudaFree(d_sharedInteger));
+				CHECK(cudaFreeHost(h_sharedInteger));
+
     			}
     		}
        
@@ -227,9 +227,9 @@ int main(int argc, char **argv){
   	}
      
 
-    //check the correctness
-    printf("!!!!!!!--%ld--\n",resultcount);  
-    printf("[result:] %d \n",matchresult.size());
+	    //check the correctness
+	    printf("!!!!!!!--%ld--\n",resultcount);  
+	    printf("[result:] %d \n",matchresult.size());
    
      
 	  //destroy memory
@@ -238,9 +238,9 @@ int main(int argc, char **argv){
   	CHECK(cudaFreeHost(h_in_ra1));
   	CHECK(cudaFreeHost(h_in_ra2));
   	CHECK(cudaFreeHost(h_out_dis));
-    CHECK(cudaFree(d_out_dis)); 
-    CHECK(cudaFree(d_count));
-    CHECK(cudaFreeHost(h_count));  
+	CHECK(cudaFree(d_out_dis)); 
+	CHECK(cudaFree(d_count));
+	CHECK(cudaFreeHost(h_count));  
     
 
   	iElaps = cpuSecond() - AllStart;
