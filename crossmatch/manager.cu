@@ -37,13 +37,13 @@ unordered_map<int,vector<vector<double>>> read_to_unordered(string path,unordere
      
         int hpid;
         int htmid;
-    		int q_num,q_num1,q_num2,q_num3,q_num4;
+    	int q_num,q_num1,q_num2,q_num3,q_num4;
      
-    		hpid = hp_nestid(b[2], b[3], 13);
+    	hpid = hp_nestid(b[2], b[3], 13);
        // htmid =lookupID(b[2], b[3], 13)/65536;
         // 16  64  256 1024  4096 16384 65536 
         // 11  10    9    8     7    6     5
-    		q_num = hpid/256;
+    	q_num = hpid/256;
         
 //        q_num = htmid/65536;
 //        double ra_plus = b[2]+R_A;
@@ -61,16 +61,16 @@ unordered_map<int,vector<vector<double>>> read_to_unordered(string path,unordere
         
         
         //not have the key in map
-	      if(recordmap2.find(q_num)==recordmap2.end()){ 
-   		    vector<vector<double>> temp;
-   		    temp.push_back(b);
-          recordmap2.insert(pair<int,vector<vector<double>>>(q_num, temp));
-          temp.clear();
-     		}	        
-     		//already have the key in map
-     		else{
-           recordmap2[q_num].push_back(b);
-     		}
+	  if(recordmap2.find(q_num)==recordmap2.end()){ 
+          	vector<vector<double>> temp;
+   		temp.push_back(b);
+         	recordmap2.insert(pair<int,vector<vector<double>>>(q_num, temp));
+         	temp.clear();
+     	  }	        
+     	//already have the key in map
+     	  else{
+          	recordmap2[q_num].push_back(b);
+     	  }
         //---------------------------------------------------
 //        if (q_num1!=q_num){
 //           if(recordmap2.find(q_num1)==recordmap2.end()){ 
@@ -133,7 +133,7 @@ unordered_map<int,vector<vector<double>>> read_to_unordered(string path,unordere
 //get the index list of the divided blocks
 vector<vector<int>> get_idlist(unordered_map<int,vector<vector<double>>> recordmap,vector<vector<int>> idlist){
 	unordered_map<int,vector<vector<double>>>::iterator iter;
-  #pragma omp parallel for
+  	#pragma omp parallel for
   	for (iter=recordmap.begin();iter!=recordmap.end();iter++){
   		vector<int> temp;
   		temp.push_back(iter->first);
@@ -151,11 +151,11 @@ vector<int> get_shared_id(unordered_map<int,vector<vector<double>>> recordmapA, 
     unordered_map<int,vector<vector<double>>>::iterator iterA;
     unordered_map<int,vector<vector<double>>>::iterator iterB;
     #pragma omp parallel for
-      for (iterA=recordmapA.begin();iterA!=recordmapA.end();iterA++){
+    for (iterA=recordmapA.begin();iterA!=recordmapA.end();iterA++){
         if ((iterB = recordmapB.find(iterA->first)) != recordmapB.end()){
            sharedlist.push_back(iterA->first);
         }
-  	  }
+    }
     //sort(sharedlist.begin(), sharedlist.end());
     return sharedlist;
 }
@@ -170,13 +170,13 @@ vector<size_t> get_cudamalloc_size(vector<vector<unsigned int>> offset_band){
   vector<size_t> maxband;
   vector<size_t> maxnbytes;
   #pragma omp parallel for
-    for (int m=0; m<offset_band.size(); m++){
+  for (int m=0; m<offset_band.size(); m++){
       unsigned int data_x_band=offset_band[m][1];
       tmp1.insert(data_x_band);
       unsigned int data_y_band=offset_band[m][2];
       tmp2.insert(data_y_band);
      
-    }
+  }
   maxband.push_back(*tmp1.rbegin());
   maxband.push_back(*tmp2.rbegin());
 
@@ -198,24 +198,23 @@ vector<vector<double>> result_output(unsigned int data_x_band,unsigned int data_
                                     unsigned int data_x_offset,unsigned int data_y_offset,vector<vector<double>> matchresult){
     vector<double> tempresult;
     #pragma omp parallel for
-      for (unsigned int ty = 0; ty<data_y_band; ty++){
-  					for (unsigned int tx = 0; tx<data_x_band; tx++){
-  						unsigned int tidx = (ty)*(data_x_band)+(tx);
-             
-  						if (h_out_dis[tidx]==1){
-                double rax=h_in_ra_x[tx+data_x_offset];
-                double decx=h_in_dec_x[tx+data_x_offset];
-                double ray=h_in_ra_y[ty+data_y_offset];
-                double decy=h_in_dec_y[ty+data_y_offset];
-                tempresult.push_back(rax);
-                tempresult.push_back(decx);
-                tempresult.push_back(ray);
-                tempresult.push_back(decy);
-                tempresult.push_back(distance(rax,decx,ray,decy));
-                matchresult.push_back(tempresult);
-                tempresult.clear();
-              }
-            }
+    for (unsigned int ty = 0; ty<data_y_band; ty++){
+  		for (unsigned int tx = 0; tx<data_x_band; tx++){
+  			unsigned int tidx = (ty)*(data_x_band)+(tx);
+                        if (h_out_dis[tidx]==1){
+				double rax=h_in_ra_x[tx+data_x_offset];
+				double decx=h_in_dec_x[tx+data_x_offset];
+				double ray=h_in_ra_y[ty+data_y_offset];
+				double decy=h_in_dec_y[ty+data_y_offset];
+				tempresult.push_back(rax);
+				tempresult.push_back(decx);
+				tempresult.push_back(ray);
+				tempresult.push_back(decy);
+				tempresult.push_back(distance(rax,decx,ray,decy));
+				matchresult.push_back(tempresult);
+				tempresult.clear();
+              	 	}
+            	}
        }
      return matchresult;
 }
