@@ -30,7 +30,7 @@ double cpu_helper()
 
 vector<double> gpu_helper()
 {
-  vector<double> gpu_info;
+	vector<double> gpu_info;
 	size_t free_byte;
 	size_t total_byte;
 	cudaError_t cuda_status = cudaMemGetInfo(&free_byte, &total_byte);
@@ -42,12 +42,12 @@ vector<double> gpu_helper()
 	double free_db = (double)free_byte;
 	double total_db = (double)total_byte;
 	//double used_db_1 = (total_db - free_db) / 1024.0 / 1024.0;
-  double total_db_1 = total_db /1024 /1024;
-  double free_db_1 = free_db /1024/1024;
+  	double total_db_1 = total_db /1024 /1024;
+  	double free_db_1 = free_db /1024/1024;
   
-  //gpu_info.push_back(used_db_1);
-  gpu_info.push_back(total_db_1);
-  gpu_info.push_back(free_db_1);
+  	//gpu_info.push_back(used_db_1);
+  	gpu_info.push_back(total_db_1);
+  	gpu_info.push_back(free_db_1);
   
-  return gpu_info;
+  	return gpu_info;
 }
