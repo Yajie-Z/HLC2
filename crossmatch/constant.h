@@ -26,8 +26,8 @@ using namespace std;
 #define PI 3.1415926535
 #define DIS 9.0*(R_A*R_A+R_B*R_B)
 
-#define N (unsigned long)(1<<19) // 524,288
+//#define N (unsigned long)(1<<19) // 524,288
 //#define SHARED_Y (1<<11) //2048
-#define BLOCK_MAX_X (1<<15) //32,768
-#define BLOCK_MAX_Y (1<<14) //16,384
+//#define BLOCK_MAX_X (1<<15) //32,768
+//#define BLOCK_MAX_Y (1<<14) //16,384
 
