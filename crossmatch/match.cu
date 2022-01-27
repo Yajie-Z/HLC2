@@ -46,14 +46,10 @@ int main(int argc, char **argv){
     double AllStart = cpuSecond();
     double iStart, iElaps;
   
-//  if(argc !=3)
-//	{
-//		printf("Please input the TXT files\n");
-//		printf("Usage: %s [filename] [output] [nodes_number]\n", argv[0]);
-//		exit(1);
-//	}
-//  string catalog1 = argv[1];
-//  string catalog2 = argv[2]; 
+    vector<double> parameters = parameter_decided();
+    const int N = parameters[0];
+    const int BLOCK_MAX_X = parameters[1];
+    const int BLOCK_MAX_Y = parameters[2];
   
     //read the csv input into recordmap
     recordmapAA = read_to_unordered("data/twomasstest5.csv",recordmapAA);
