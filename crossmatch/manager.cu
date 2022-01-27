@@ -5,6 +5,83 @@
 #include "HTM.h"
 #include "HTM.c"
 
+int power (double gpumem){
+  int coefficient=0; 
+  #pragma omp parallel for
+    for(int i=0;i<21;i++){
+       double left = 1<<i;
+       double right = 1<<(i+1);
+       if (gpumem>left && gpumem <right) {
+         coefficient = i+1;
+       }
+    }
+  
+  //cout<<"testtest:"<<coefficient<<endl;
+  return coefficient;
+}
+
+vector<double> parameter_decided(){
+    vector<double> parameter;
+    vector<double> gpu_info = gpu_helper();
+    double free_db,availableCPU;
+    free_db = gpu_info[1];
+   
+    availableCPU = cpu_helper();
+    int nnn;
+    int left, right;
+    //---------------cpu--------------------
+    right = power(availableCPU/1024)+20;
+    
+    //nnn = (availableCPU * 1024) / 32 ; 
+
+    int j=1;
+    
+    while(j<30){
+        left =15+j; //按照Nx double x 4来算 应该是5+j 但是还需要考虑到结果
+        if (left < right){
+          j=j+1;
+        }
+        else{
+          break;
+      }
+    
+    }
+    cout<<j<<endl;
+    nnn= (1<<(j-1));
+    parameter.push_back(nnn);
+    
+    
+    //----------GPU---------------
+    //parameter.push_back(free_db);
+    
+    int compare_left, compare_right;
+    int compare_left2;
+    int block_max_x, block_max_y;
+
+    compare_right = power(free_db)+20;
+    int i=1;
+    while(i<20){
+      compare_left = 8*4*(1<<i)+8*(1<<i)*(1<<i);
+      compare_left2 = 3+i+i;
+      if (compare_left2 < compare_right){
+          i=i+1;
+      }
+      else{
+          break;
+      }
+      
+    }
+    
+    
+    cout<<i<<endl;
+    block_max_x= (1<<(i-1));
+    block_max_y = block_max_x /2 ;
+    
+    parameter.push_back(block_max_x);
+    parameter.push_back(block_max_y);
+    
+  return parameter;
+}
 
 //calculating Healpix index
 int hp_nestid(double ra, double dec, int order)
