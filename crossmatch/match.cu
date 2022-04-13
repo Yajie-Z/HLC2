@@ -162,7 +162,7 @@ int main(int argc, char **argv){
     			nBytes2 = (data_y_band)*sizeof(double);
     			nBytes3 = (data_x_band)*(data_y_band)*sizeof(int);
     				
-    			int dimx = 80;
+    			int dimx = 128;
     			int dimy = 1;
     
     			if (argc > 1) dimx = atoi(argv[1]);
