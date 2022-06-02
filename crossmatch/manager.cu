@@ -37,7 +37,7 @@ vector<double> parameter_decided(){
     int j=1;
     
     while(j<30){
-        left =15+j; //按照Nx double x 4来算 应该是5+j 但是还需要考虑到结果
+        left =15+j; 
         if (left < right){
           j=j+1;
         }
