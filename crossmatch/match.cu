@@ -40,7 +40,6 @@ __global__ void compute_1D_1D(double* d_in_ra1, double* d_in_dec1, double* d_in_
 }
 
 
-
 int main(int argc, char **argv){
 
     double AllStart = cpuSecond();
@@ -94,7 +93,6 @@ int main(int argc, char **argv){
      CHECK(cudaMalloc((void **)&d_count, sizeof(int)));
      CHECK(cudaMemset(d_count, 0, sizeof(int)));
   
-    
      // malloc device memory space
      CHECK(cudaMallocHost((double**)&h_in_ra1, N*sizeof(double)));
      CHECK(cudaMallocHost((double**)&h_in_ra2, N*sizeof(double)));
@@ -155,8 +153,6 @@ int main(int argc, char **argv){
 			CHECK(cudaMalloc((void **)&d_sharedInteger, sizeof(int)));
 			CHECK(cudaMemset(d_sharedInteger, 0, sizeof(int)));
             
-            
-        
     			// dynamically set up the size of data
     			nBytes = (data_x_band)*sizeof(double);
     			nBytes2 = (data_y_band)*sizeof(double);
@@ -205,7 +201,6 @@ int main(int argc, char **argv){
        
     		iElaps = cpuSecond() - iStart;
     		//printf("[Info]File %d is done, elapsed %f s.\n", sharedlist[i], iElaps);
-  
   	}
      
 
@@ -213,7 +208,7 @@ int main(int argc, char **argv){
 	 printf("!!!!!!!--%ld--\n",resultcount);  
 	 printf("[result:] %d \n",matchresult.size());
    
-     
+    
 	//destroy memory
   	CHECK(cudaFreeHost(h_in_dec1));
   	CHECK(cudaFreeHost(h_in_dec2));
