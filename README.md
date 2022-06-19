@@ -46,53 +46,14 @@ All of these packages can be found in "Dependencies" directory or get from follo
 
 - CUDA: https://developer.nvidia.com/cuda-toolkit-archive
 
-### Build from source
+## Compile && Run
 
-1. Change the direction to "HCGrid" folder
-2. Update the library file paths in the Makefile according to the paths of installed dependencies, e.g. CUDA, fits, wcslib, etc.
-3. make 
-
-## Getting Started
 
 1. Defined and create a target grid map according to specific scenario, in Creat_target_file.py, such as:
 
-``` python
-# define target FITS/WCS header
-header = {
-	'NAXIS': 3,
-	'NAXIS1': dnaxis1,
-	'NAXIS2': dnaxis2,
-	'NAXIS3': 1,  
-	'CTYPE1': 'RA---SIN',
-	'CTYPE2': 'DEC--SIN',
-	'CUNIT1': 'deg',
-	'CUNIT2': 'deg',
-	'CDELT1': -pixsize,
-	'CDELT2': pixsize,
-	'CRPIX1': dnaxis1 / 2.,
-	'CRPIX2': dnaxis2 / 2.,
-	'CRVAL1': mapcenter[0],
-	'CRVAL2': mapcenter[1],
-	}
-```
+
 
 2. Set the related kernel parameters in HCGrid.cpp
-
-```c++
-/*Set kernel*/
-kernel_type = GAUSS1D;
-kernelsize_fwhm = 300./3600.;
-kernelsize_sigma = 0.2;
-kernel_params[0] = kernelsize_sigma;
-sphere_radius = 3.*kernelsize_sigma;
-hpx_max_resolution=kernelsize_sigma/2;
-_prepare_grid_kernel(
-	kernel_type, 
-	kernel_params, 
-	sphere_radius, 
-	hpx_max_resolution
-	);
-```
 
 3. make
 
@@ -131,16 +92,6 @@ $ python Creat_target_file.py -p /home/summit/Project/HCGrid/data/ -t target -n 
 ```shell
 $ ./HCGrid --fits_path /home/summit/Project/HCGrid/data/ --input_file input --target_file target --output_file output --fits_id 1 --beam_size 300 --register_num 64 --sp_num 64 --order_arg 1
 ```
-
-or
-
-```shell
-$ ./HCGrid --fits_path /home/summit/HCGrid/data/ --input_file input --target_file target --output_file output --fits_id 1 --beam_size 300 --order_arg 1 --block_num 64
-```
-
-The former further specifies the relevant hardware parameters, please refer to our article for details.
-
-
 
 ## Community Contribution and Advice
 
