@@ -4,8 +4,8 @@ A highly efficient cross-matching framework for large astronomical catalogues in
 This is the main source code of HLC2, which can perform cross-matching between two astronomical catalogues. HLC2 is a high performance command-line cross-matching tool running on the Linux platform, which is implemented in C and C++.
 
 
-- [HCGrid](#hcgrid)
-  * [More About HCGrid](#more-about-hcgrid)
+- [HLC2](#hcgrid)
+  * [More About HLC2](#more-about-hcgrid)
     + [Implementation](#implementation)
     + [Features](#features)
   * [Installation](#installation)
@@ -17,21 +17,21 @@ This is the main source code of HLC2, which can perform cross-matching between t
 
 
 
-## More About HCGrid 
+## More About HLC2
 
 
 ### Implementation
 
 The specific steps of cross-matching for two astronomical catalogues are shown in the following figure. 
 
-<P align="center"><img src=figs/architecture_and_workflow_of_HLC2.png hidth="50%" width="78%"></img></p>
+<P align="center"><img src=figs/architecture_and_workflow_of_HLC2.png hidth="50%" width="75%"></img></p>
 
 First the **Extraction module** extracts celestial position information (mainly RA, DEC) from the input data and filters out useless information. The **First-level partition module** divides the extracted location information into HEALPix data blocks, while our quad-direction strategy is implemented in the **Boundary-solved module** to reduce the loss of accuracy without adding too much redundant data. Then through **Second-level partition module**, calculation blocks can be obtained for storing and subsequent parallel accessing catalogue records on GPU. **Source reading module** is designed to retrieve the current CPU and GPU computing status to dynamically adjust splitting strategy. On the GPU, the inter-catalogue parallelization is adopted to calculate the radius distances on **Kernel module** with I/O optimizations on the **Compression module**. Finally, the matching results transferred to CPU will be exported the final products and be visualized. This function is under development. 
 
 
 ### Features
 
-- Supports WCS projection system as target.
+- Supports end-to-end efficent cross-matching of catalogues.
 - Scales well in CPU-GPU heterogeneous platforms.
 
 ## Installation
