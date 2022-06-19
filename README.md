@@ -3,7 +3,7 @@ An efficient heterogeneous cross-matcher for large catalogs
 
 New emerging large single-dish radio telescopes like Five-hundred-meter Aperture Spherical radio Telescope (FAST) have heightened the need for developing both more resilient hardware and efficient algorithms than those conventional technology can provide. To process the spectral line data from the radio telescopes, the convolution-based gridding algorithm is widely adopted to solve the most compute-intensive parts of creating sky images: gridding.
 
-**HCGrid** is a high performance gridding software for the spectral line data gridding of the large single-dish radio telescope. Cygrid is the state-of-the-art gridding method for single-dish radio telescope deployed in the computing environment of  multiple CPU cores, and the HCGrid implementation takes reference from Cygrid (For more information, please visit https://github.com/bwinkel/cygrid or https://www.aanda.org/articles/aa/abs/2016/07/aa28475-16/aa28475-16.html).
+**HCGrid** is a high performance gridding software for the spectral line data gridding of the large single-dish radio telescope. Cygrid is the state-of-the-art gridding method for single-dish radio telescope deployed in the computing environment of  multiple CPU cores
 
 - [HCGrid](#hcgrid)
   * [More About HCGrid](#more-about-hcgrid)
@@ -20,26 +20,12 @@ New emerging large single-dish radio telescopes like Five-hundred-meter Aperture
 
 ## More About HCGrid 
 
-This work was published in MNRAS, so please cite our article if you use HCGrid.
-
-```latex
-@article{wang2021hcgrid,
-  title={HCGrid: a convolution-based gridding framework for radio astronomy in hybrid computing environments},
-  author={Wang, Hao and Yu, Ce and Zhang, Bo and Xiao, Jian and Luo, Qi},
-  journal={Monthly Notices of the Royal Astronomical Society},
-  volume={501},
-  number={2},
-  pages={2734--2744},
-  year={2021},
-  publisher={Oxford University Press}
-}
-```
 
 ### Implementation
 
 The specific steps of gridding for single channel spectral data are shown in the following figure, including:
 
-<P align="center"><img src=pic/HCGrid.png hidth="50%" width="50%"></img></p>
+<P align="center"><img src=figs/architecture and workflow of HLC2.png hidth="88%" width="56%"></img></p>
 
 
 
