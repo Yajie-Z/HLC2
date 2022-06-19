@@ -52,7 +52,7 @@ float string_to_float(string str){
     return sum;
 }
 
-
+//angle distance calculation function
 double distance(double rax,double decx,double ray, double decy){
   double tmp1 = rax - ray;
   double tmp2 = decx - decy;
