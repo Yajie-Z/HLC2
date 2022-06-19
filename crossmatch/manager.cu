@@ -5,6 +5,7 @@
 #include "HTM.h"
 #include "HTM.c"
 
+//a helper function for dynamic partitioning
 int power (double gpumem){
   int coefficient=0; 
   #pragma omp parallel for
@@ -15,11 +16,10 @@ int power (double gpumem){
          coefficient = i+1;
        }
     }
-  
-  //cout<<"testtest:"<<coefficient<<endl;
   return coefficient;
 }
 
+//decide the partitioning strategy based on the specific hardware environment
 vector<double> parameter_decided(){
     vector<double> parameter;
     vector<double> gpu_info = gpu_helper();
@@ -29,10 +29,9 @@ vector<double> parameter_decided(){
     availableCPU = cpu_helper();
     int nnn;
     int left, right;
+	
     //---------------cpu--------------------
     right = power(availableCPU/1024)+20;
-    
-    //nnn = (availableCPU * 1024) / 32 ; 
 
     int j=1;
     
@@ -46,20 +45,20 @@ vector<double> parameter_decided(){
       }
     
     }
-    cout<<j<<endl;
+	
+    //cout<<j<<endl;
     nnn= (1<<(j-1));
     parameter.push_back(nnn);
     
     
     //----------GPU---------------
-    //parameter.push_back(free_db);
-    
     int compare_left, compare_right;
     int compare_left2;
     int block_max_x, block_max_y;
 
     compare_right = power(free_db)+20;
     int i=1;
+	
     while(i<20){
       compare_left = 8*4*(1<<i)+8*(1<<i)*(1<<i);
       compare_left2 = 3+i+i;
@@ -72,15 +71,16 @@ vector<double> parameter_decided(){
       
     }
     
-    
-    cout<<i<<endl;
+    //cout<<i<<endl;
+	
     block_max_x= (1<<(i-1));
     block_max_y = block_max_x /2 ;
     
     parameter.push_back(block_max_x);
     parameter.push_back(block_max_y);
     
-  return parameter;
+    return parameter;
+	
 }
 
 //calculating Healpix index
@@ -199,7 +199,7 @@ unordered_map<int,vector<vector<double>>> read_to_unordered(string path,unordere
 //             recordmap2[q_num4].push_back(b);
 //       		}
 //        }
-       //---------------------------------------------------
+      
         b.clear(); 
    
     }  
@@ -218,11 +218,11 @@ vector<vector<int>> get_idlist(unordered_map<int,vector<vector<double>>> recordm
 		idlist.push_back(temp);
   		temp.clear();
   	}
-  //sort(idlist.begin(), idlist.end());
+        //sort(idlist.begin(), idlist.end());
 	return idlist;
 }
 
-//get the shared index list of divided blocks of record A and B
+//get the shared index list of divided blocks of catalogue A and B
 vector<int> get_shared_id(unordered_map<int,vector<vector<double>>> recordmapA, unordered_map<int,vector<vector<double>>> recordmapB){
     vector<int> sharedlist;
     unordered_map<int,vector<vector<double>>>::iterator iterA;
@@ -238,6 +238,7 @@ vector<int> get_shared_id(unordered_map<int,vector<vector<double>>> recordmapA, 
 }
 
 
+// for cuda memory allocation
 vector<size_t> get_cudamalloc_size(vector<vector<unsigned int>> offset_band){
   set<unsigned int> tmp1;
   set<unsigned int> tmp2;
@@ -270,6 +271,7 @@ vector<size_t> get_cudamalloc_size(vector<vector<unsigned int>> offset_band){
   return maxnbytes;
 }
 
+//output the cross-matching results
 vector<vector<double>> result_output(unsigned int data_x_band,unsigned int data_y_band,int  *h_out_dis,
                                     double *h_in_ra_x,double *h_in_dec_x, double*h_in_ra_y, double*h_in_dec_y,
                                     unsigned int data_x_offset,unsigned int data_y_offset,vector<vector<double>> matchresult){
@@ -292,7 +294,7 @@ vector<vector<double>> result_output(unsigned int data_x_band,unsigned int data_
 				tempresult.clear();
               	 	}
             	}
-       }
+     }
      return matchresult;
 }
 
