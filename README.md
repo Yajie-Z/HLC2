@@ -25,7 +25,7 @@ New emerging large single-dish radio telescopes like Five-hundred-meter Aperture
 
 The specific steps of gridding for single channel spectral data are shown in the following figure, including:
 
-<P align="center"><img src=figs/architecture and workflow of HLC2.png hidth="88%" width="56%"></img></p>
+<P align="center"><img src=figs/architecture_and_workflow_of_HLC2.png hidth="56%" width="88%"></img></p>
 
 
 
