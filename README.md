@@ -1,9 +1,8 @@
 # HLC2
-An efficient heterogeneous cross-matcher for large catalogs
+A highly efficient cross-matching framework for large astronomical catalogues in hybrid computing platforms
 
-New emerging large single-dish radio telescopes like Five-hundred-meter Aperture Spherical radio Telescope (FAST) have heightened the need for developing both more resilient hardware and efficient algorithms than those conventional technology can provide. To process the spectral line data from the radio telescopes, the convolution-based gridding algorithm is widely adopted to solve the most compute-intensive parts of creating sky images: gridding.
+This is the main source code of HLC2, which can perform cross-matching between two astronomical catalogues. HLC2 is a high performance command-line cross-matching tool running on the Linux platform, which is implemented in C and C++.
 
-**HCGrid** is a high performance gridding software for the spectral line data gridding of the large single-dish radio telescope. Cygrid is the state-of-the-art gridding method for single-dish radio telescope deployed in the computing environment of  multiple CPU cores
 
 - [HCGrid](#hcgrid)
   * [More About HCGrid](#more-about-hcgrid)
@@ -23,15 +22,12 @@ New emerging large single-dish radio telescopes like Five-hundred-meter Aperture
 
 ### Implementation
 
-The specific steps of gridding for single channel spectral data are shown in the following figure, including:
+The specific steps of cross-matching for two astronomical catalogues are shown in the following figure. 
 
-<P align="center"><img src=figs/architecture_and_workflow_of_HLC2.png hidth="56%" width="88%"></img></p>
+<P align="center"><img src=figs/architecture_and_workflow_of_HLC2.png hidth="50%" width="78%"></img></p>
 
+First the **Extraction module** extracts celestial position information (mainly RA, DEC) from the input data and filters out useless information. The **First-level partition module** divides the extracted location information into HEALPix data blocks, while our quad-direction strategy is implemented in the **Boundary-solved module** to reduce the loss of accuracy without adding too much redundant data. Then through **Second-level partition module**, calculation blocks can be obtained for storing and subsequent parallel accessing catalogue records on GPU. **Source reading module** is designed to retrieve the current CPU and GPU computing status to dynamically adjust splitting strategy. On the GPU, the inter-catalogue parallelization is adopted to calculate the radius distances on **Kernel module** with I/O optimizations on the **Compression module**. Finally, the matching results transferred to CPU will be exported the final products and be visualized. This function is under development. 
 
-
-- **Initialization module:** This module mainly initializes some parameters involved in the calculation process, such as setting the size of the sampling space, output resolution and other parameters.
-- **Gridding module:** The core functional modules of the HCGrid. The key to improving gridding performance is to increase the speed of convolution calculations. First, in order to reduce the search space of the original sampling points, we use a parallel ordering algorithm to pre-order the sampling points based on HEALPix on the CPU platform and propose an efficient two-level lookup table to speed up the acquisition of sampling points. Then, accelerating convolution by utilizing the high parallelism of GPU and through related performance optimization strategies based on CUDA architecture to further improve the gridding performance.
-- **Result-processing module,** which visualize the gridding results, as well as exporting the final products as FITS files.
 
 ### Features
 
@@ -42,18 +38,12 @@ The specific steps of gridding for single channel spectral data are shown in the
 
 ### Dependencies
 
-- cfitsio-3.47 or later
-- wcslib-5.16 or later
-- HDF5
-- boost library
+
 - CUDA Toolkit
 
 All of these packages can be found in "Dependencies" directory or get from follow address:
 
-- cfitsio: https://heasarc.gsfc.nasa.gov/fitsio/
-- wcslib: https://www.atnf.csiro.au/people/Mark.Calabretta/WCS/
-- HDF5: https://www.hdfgroup.org/downloads/hdf5
-- boost: https://www.boost.org/
+
 - CUDA: https://developer.nvidia.com/cuda-toolkit-archive
 
 ### Build from source
@@ -150,16 +140,11 @@ $ ./HCGrid --fits_path /home/summit/HCGrid/data/ --input_file input --target_fil
 
 The former further specifies the relevant hardware parameters, please refer to our article for details.
 
-***Notice:***
-
-  1. fits_path represents the absolute path to all FITS / HDF5 files (including input files, target map files, and output files).
-  2. The parameter "block_num" represents the number of thread in each block. Changing the value of it will also change the number of block in the grid to realize the reasonable thread organization configuration. The best value of block_num has relationship with the register of GPU. For example, For Tesla K40, the total number of registers available per block is *64K*. And the compilation report shows that the kernel of HCGrid calls a total of 184 registers, because the kernel does not use shared memory to store parameters, so it is expected that each thread block can execute about 64K/184 $\approx$ 356 threads concurrently. So, the better value of block_num should close to 356.
-     3. Parameter "coarsening_factor" represents the value of coarsening factor $\gamma$. When applying thread coarsening strategy in practice, the factor $\gamma$ should be reasonable setting according to the resolution of the output grid. Through experiments, we found that a large $\gamma$ would reduce the accuracy of gridding, so we suggested that the selection range of $\gamma$ should be $\gamma=1,2,3$.
 
 
 ## Community Contribution and Advice
 
-HCGrid is being further improved, if you have any question or ideas, please don't skimp on your suggestions and welcome make a pull request. Moreover, you can contact us through the follow address.
+HLC2 is being further improved, if you have any question or ideas, please don't skimp on your suggestions and welcome make a pull request. Moreover, you can contact us through the follow address.
 
-- imwh@tju.edu.cn
+- zyj0928@tju.edu.cn
 
