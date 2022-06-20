@@ -31,7 +31,7 @@ First the **Extraction module** extracts celestial position information (mainly 
 
 ### Features
 
-- Supports end-to-end efficent cross-matching of catalogues.
+- Supports end-to-end efficient cross-matching of catalogues.
 - Scales well in CPU-GPU heterogeneous platforms.
 
 ## Installation
@@ -59,7 +59,7 @@ First the **Extraction module** extracts celestial position information (mainly 
 ```shell
 $  ./Crossmatch ../data_sample/sample1_sdss.csv ../data_sample/sample2_sdss.csv 
 ```
-The cross-matching time of the catalogues will be printed in the console.
+The cross-matching time of the two catalogues will be printed in the console.
 
 2. If you want to get the cross-matching result, use the following command:
 
