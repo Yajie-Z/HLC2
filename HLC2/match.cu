@@ -32,38 +32,34 @@ __global__ void compute_1D_1D(double* d_in_ra1, double* d_in_dec1, double* d_in_
 	for (unsigned int iy = 0; iy < ny; ++iy){
 	    double tmp1 = compute_distance(d1,d2,d_in_ra2[iy], d_in_dec2[iy]);
 	    if (tmp1<DIS){
-	     d_out_dis[(iy)*(nx)+ix] = 1;
-      }
-	}
-
-	return;
+	    	d_out_dis[(iy)*(nx)+ix] = 1;
+            }
+     }
+     return;
 }
 
 
 int main(int argc, char **argv){
     
-   	if(argc < 3)
-  	{
-  		printf("Please input the catalog files\n");
-  		printf("Usage: %s [catalog1_file] [catalog2_file] [output] \n", argv[0]);
-  		exit(1);
-  	}
+     if(argc < 3)
+     {
+  	  printf("Please input the catalog files\n");
+  	  printf("Usage: %s [catalog1_file] [catalog2_file] [output_file] \n", argv[0]);
+  	  exit(1);
+     }
      
-    
+    //initialize the output file if needed
      FILE *fp3;
      if(argc == 4){
-     
-     if((fp3=fopen(argv[3],"w"))==NULL) {
+           if((fp3=fopen(argv[3],"w"))==NULL) {
     		fprintf(stderr,"Open %s Error:%s\n",argv[3],strerror(errno));
     		exit(1);
-     }
+            }
      }
      
     double AllStart = cpuSecond();
     double iStart, iElaps;
-    
 
-     
     vector<double> parameters = parameter_decided();
     const int N = parameters[0];
     const int BLOCK_MAX_X = parameters[1];
@@ -190,15 +186,13 @@ int main(int argc, char **argv){
     			CHECK(cudaMemcpyAsync(d_in_ra2, h_in_ra_y+data_y_offset, nBytes2, cudaMemcpyHostToDevice));
     			CHECK(cudaMemcpyAsync(d_in_dec2, h_in_dec_y+data_y_offset,nBytes2, cudaMemcpyHostToDevice));	
              		
-     		  compute_1D_1D <<<grid, block>>>(d_in_ra1, d_in_dec1, d_in_ra2, d_in_dec2, d_out_dis, data_x_band, data_y_band);
+     		  	compute_1D_1D <<<grid, block>>>(d_in_ra1, d_in_dec1, d_in_ra2, d_in_dec2, d_out_dis, data_x_band, data_y_band);
                         
-			    //transfer the cross-matching results back to the CPU
+			//transfer the cross-matching results back to the CPU
     			CHECK(cudaMemcpyAsync(h_out_dis, d_out_dis, nBytes3, cudaMemcpyDeviceToHost));
           
-          if(argc == 4){
-  
-        
-        for (unsigned int ty = 0; ty<data_y_band; ty++){
+         		if(argc == 4){
+        			for (unsigned int ty = 0; ty<data_y_band; ty++){
 					for (unsigned int tx = 0; tx<data_x_band; tx++){
 						unsigned int tidx = (ty+data_y_offset)*(data_x_band)+(tx+data_x_offset);
 						if (h_out_dis[tidx] == 1){
@@ -207,15 +201,13 @@ int main(int argc, char **argv){
 					}
 				}
  			}
-       CHECK(cudaMemcpy(h_sharedInteger, d_sharedInteger, sizeof(int),cudaMemcpyDeviceToHost));
-   
+			
+      
 			//release
     			CHECK(cudaFree(d_in_ra1));
     			CHECK(cudaFree(d_in_ra2));
     			CHECK(cudaFree(d_in_dec1));
     			CHECK(cudaFree(d_in_dec2));
-			CHECK(cudaFree(d_sharedInteger));
-			CHECK(cudaFreeHost(h_sharedInteger));
 
     			}
     		}
@@ -236,10 +228,12 @@ int main(int argc, char **argv){
 	CHECK(cudaFree(d_out_dis)); 
 	CHECK(cudaFree(d_count));
 	CHECK(cudaFreeHost(h_count));  
-  if(argc == 4){
-  fclose(fp3);
-  }
+	if(argc == 4){
+		fclose(fp3);
+	}
+	
   	iElaps = cpuSecond() - AllStart;
+	
 	//print the total cross-matching time
   	printf("[Info]All time is %f s\n", iElaps);	
    
