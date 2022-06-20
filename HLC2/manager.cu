@@ -143,65 +143,66 @@ unordered_map<int,vector<vector<double>>> read_to_unordered(string path,unordere
         //the key is not in the map
 	if(recordmap2.find(q_num)==recordmap2.end()){ 
           	vector<vector<double>> temp;
-     temp.push_back(b);
+     		temp.push_back(b);
          	recordmap2.insert(pair<int,vector<vector<double>>>(q_num, temp));
          	temp.clear();
-     	  }	        
+     	}	        
      	//already have the key in map
-     	  else{
+     	else{
           	recordmap2[q_num].push_back(b);
-     	  }
+     	}
           
         //quad-direction strategy 
         if (q_num1!=q_num){
            if(recordmap2.find(q_num1)==recordmap2.end()){ 
-     		    vector<vector<double>> temp;
-     		    temp.push_back(b);
-            recordmap2.insert(pair<int,vector<vector<double>>>(q_num1, temp));
-            temp.clear();
-       		}	        
+           	vector<vector<double>> temp;
+     		temp.push_back(b);
+            	recordmap2.insert(pair<int,vector<vector<double>>>(q_num1, temp));
+            	temp.clear();
+       	    }	        
        		
-       		else{
-             recordmap2[q_num1].push_back(b);
+       	    else{
+             	recordmap2[q_num1].push_back(b);
        		}
         }
         
         if (q_num2 != q_num){
            if(recordmap2.find(q_num2)==recordmap2.end()){ 
-     		    vector<vector<double>> temp;
-     		    temp.push_back(b);
-            recordmap2.insert(pair<int,vector<vector<double>>>(q_num2, temp));
-            temp.clear();
-       		}	        
+     		vector<vector<double>> temp;
+     		temp.push_back(b);
+            	recordmap2.insert(pair<int,vector<vector<double>>>(q_num2, temp));
+            	temp.clear();
+       	    }	        
        	
-       		else{
-             recordmap2[q_num2].push_back(b);
-       		}
+       	    else{
+            	recordmap2[q_num2].push_back(b);
+       	    }
         }
          
          if (q_num3 != q_num){
-           if(recordmap2.find(q_num3)==recordmap2.end()){ 
-     		    vector<vector<double>> temp;
-     		    temp.push_back(b);
-            recordmap2.insert(pair<int,vector<vector<double>>>(q_num3, temp));
-            temp.clear();
+             if(recordmap2.find(q_num3)==recordmap2.end()){ 
+     		   vector<vector<double>> temp;
+     		   temp.push_back(b);
+                   recordmap2.insert(pair<int,vector<vector<double>>>(q_num3, temp));
+                   temp.clear();
        		}	        
-       	
-       		else{
-             recordmap2[q_num3].push_back(b);
-       		}
+
+       	     else{
+             	recordmap2[q_num3].push_back(b);
+       	     }
          }
-          if (q_num4 != q_num){
+         
+	 if (q_num4 != q_num){
            if(recordmap2.find(q_num4)==recordmap2.end()){ 
-     		    vector<vector<double>> temp;
-     		    temp.push_back(b);
-            recordmap2.insert(pair<int,vector<vector<double>>>(q_num4, temp));
-            temp.clear();
-       		}	        
+     		  vector<vector<double>> temp;
+     		  temp.push_back(b);
+                  recordmap2.insert(pair<int,vector<vector<double>>>(q_num4, temp));
+                  temp.clear();
+       	    }	        
        
-       		else{
-             recordmap2[q_num4].push_back(b);
-       		}
+       	    else{
+            	recordmap2[q_num4].push_back(b);
+       	    }
         }
       
         b.clear(); 
