@@ -121,9 +121,11 @@ unordered_map<int,vector<vector<double>>> read_to_unordered(string path,unordere
         // 16  64  256 1024  4096 16384 65536 
         // 11  10    9    8     7    6     5
     	q_num = hpid/64;
-      // can also change to HTM index for comparison
-      // htmid =lookupID(b[2], b[3], 13)/65536;
-      //q_num = htmid/65536;
+       
+	// can also change to HTM index for comparison
+        // htmid =lookupID(b[2], b[3], 13)/65536;
+        //q_num = htmid/65536;
+	    
         double ra_plus = b[2]+R_A;
       	double ra_minus = b[2]-R_A;
       	double dec_plus = b[3]+R_B;
@@ -138,8 +140,8 @@ unordered_map<int,vector<vector<double>>> read_to_unordered(string path,unordere
         q_num4 = hpid4/64;
         
         
-        //not have the key in map
-	  if(recordmap2.find(q_num)==recordmap2.end()){ 
+        //the key is not in the map
+	if(recordmap2.find(q_num)==recordmap2.end()){ 
           	vector<vector<double>> temp;
      temp.push_back(b);
          	recordmap2.insert(pair<int,vector<vector<double>>>(q_num, temp));
@@ -283,15 +285,14 @@ int result_output(unsigned int data_x_band,unsigned int data_y_band,int  *h_out_
     for (unsigned int ty = 0; ty<data_y_band; ty++){
   		for (unsigned int tx = 0; tx<data_x_band; tx++){
   			unsigned int tidx = (ty)*(data_x_band)+(tx);
-        if (h_out_dis[tidx] ==1){
-        
-        recordcount += 1;
-        fprintf( fp3,"%.16lf %.16lf %.16lf %.16lf %.16lf \n", h_in_ra_x[tx+data_x_offset], h_in_dec_x[tx+data_x_offset],
+           		if (h_out_dis[tidx] ==1){
+        			recordcount += 1;
+        			fprintf( fp3,"%.16lf %.16lf %.16lf %.16lf %.16lf \n", h_in_ra_x[tx+data_x_offset], h_in_dec_x[tx+data_x_offset],
 										h_in_ra_y[ty+data_y_offset], h_in_dec_y[ty+data_y_offset], sqrt(h_out_dis[tidx]));
- 	      }
-            	}
-     }
-     return recordcount;
+ 	 		}
+  		}
+    }
+    return recordcount;
 
 }
 
