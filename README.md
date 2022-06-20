@@ -46,38 +46,18 @@ All of these packages can be found in "Dependencies" directory or get from follo
 
 - CUDA: https://developer.nvidia.com/cuda-toolkit-archive
 
-## Compile && Run
+## Build from source
 
-
-1. Defined and create a target grid map according to specific scenario, in Creat_target_file.py, such as:
-
-
-
-2. Set the related kernel parameters in HCGrid.cpp
-
+1. Change the direction to 'HLC2' directory
+2. Update the library file paths in the Makefile according to the paths of installed dependencies.
 3. make
+It will generate an executable file：Crossmatch
 
 ### Minimal example
 
 In the terminal window, after successful compilation, you can do the following thing:
 
 1. Type "**./HCGrid -h**" to get the detail parameter guide.
-2. ./HCGrid [options]. The options include the following parameter:
-
-| Parameter | Description |
-| :----------| :-----------------------------------|
-| fits_path  | Absolute path of FITS file             |
-| input_file | Name of unsorted input FITS file       |
-| target_file| Name of target FITS file               |
-| output_file| Name of output FITS file               |
-| sorted_file| Name of sorted input FITS file         |
-| fits_id    | ID of FITS file                        |
-| beam_size  | Beam size of FITS file                 |
-|register_num| total number of registers for each thread block of the GPU |
-|  sp_num    |the number of SPs in each SM of the GPU.|
-| ord_arg    | Select the pre_order function      |
-| block_num  | The number of thread in each block     |
-| coarsening_factor| The value of coarsening factor   |
 
 3. Create the target map:
 
